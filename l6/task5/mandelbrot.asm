@@ -41,23 +41,6 @@ DATA_SEG equ gdt_data - gdt_start
 
 bits 32
 boot2:
-;    mov ax, DATA_SEG
-;    mov ds, ax
-;    mov es, ax
-;    mov fs, ax
-;    mov gs, ax
-;    mov ss, ax
-;    mov ebx,0xa0000     ; adres ekranu graficznego
-;    mov cx,200          ; 200 lini ekranu
-;.loop2:
-;    mov dx,320          ; 320 piksli na linie
-;.loop1:
-;    mov byte [ebx], cl
-;    add ebx,1
-;    dec dx
-;    jne .loop1
-;    loop .loop2
-
     mov di,0
     mov dword [CntrA],-510*256
     mov word  [X],0

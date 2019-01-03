@@ -58,7 +58,7 @@ boot2:
 ;    jne .loop1
 ;    loop .loop2
 
-    mov di, Screen
+    mov di,0
     mov dword [CntrA],-510*256
     mov word  [X],0
 @@LoopHoriz:
@@ -70,39 +70,39 @@ boot2:
     mov si,32-1
 @@LoopFractal:
     mov eax,ecx
-    imul eax, eax
+    imul eax, eax ; x^2
     mov ebx, edx
-    imul ebx, ebx
-    sub eax,ebx
-    add eax, dword [CntrA]
+    imul ebx, ebx ; y^2
+    sub eax,ebx ; x^2 - y^2
+    add eax, dword [CntrA] ; + C
     mov ebx,ecx
-    imul ebx,edx
-    sal ebx,1
-    add ebx,edx
-    sal ebx,1
-    add ebx,dword [CntrB]
+    imul ebx,edx ; x*y
+    sal ebx,1 ; 2xy
+    add ebx,dword [CntrB] ; 2xy + C
     sar eax,8
     sar ebx,8
     mov ecx,eax
     mov edx,ebx
     imul eax,eax
     imul ebx,ebx
-    add eax,ebx
+    add eax,ebx ; x^2+y^2
     sar eax,8
     cmp eax,1024
     jg Break
     dec si
     jnz @@LoopFractal
 Break:
-    mov ax, si
-    mov byte [di],al
+    mov bx, si
+    mov eax, 0xa0000
+    add ax, di
+    mov byte [eax], bl
     add dword [CntrB],720
     add di,320
     dec word [Y]
     jnz @@LoopVert
     add dword [CntrA],568
     inc word [X]
-    mov di,Screen
+    mov di,0
     add di,word [X]
     cmp word [X], 320
     jnz @@LoopHoriz
@@ -113,9 +113,8 @@ halt:
 
 times 510 - ($-$$) db 0
 dw 0xaa55
+.data:
 CntrA dd 0
 CntrB dd 0
-Screen dd 0
 X dw 0
 Y dw 0
-

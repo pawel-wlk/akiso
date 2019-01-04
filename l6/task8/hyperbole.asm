@@ -34,11 +34,11 @@ main:
     fld qword [num1]
     fld st0
     fld st0
-    fmul; multiply first two xs
+    fmulp; multiply first two xs
     fld1; load 1
-    fadd; add x**2 + 1
+    faddp; add x**2 + 1
     fsqrt; sqrt(x**2+1)
-    fadd; x+sqrt(x**2+1_
+    faddp; x+sqrt(x**2+1_
     fyl2x; log_2(whole upper thing)
     fldl2e
     fdiv 
@@ -53,7 +53,7 @@ main:
     fld st1
     fprem
     f2xm1
-    fadd
+    faddp
     fscale
     fld st0
     fld1
@@ -61,7 +61,7 @@ main:
     fsub
     fld1
     fld1
-    fadd
+    faddp
     fdiv
 
     jmp printing

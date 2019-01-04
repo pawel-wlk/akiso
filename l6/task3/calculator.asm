@@ -56,7 +56,7 @@ main:
     push dword [num1]
     push resultformat
     call printf
-    add esp, 4 
+    add esp, 10 
 
   mov ebx, 0
   mov eax, 1  ; sys_exit

@@ -35,7 +35,7 @@ byte            dta b(0)
 
                 org $2000
 text            equ *
-                dta a(0),a(0),a(0),a(0)
+                dta b(0),b(0)
                 dta b(10) ; '\n'
                 dta a(0)
 

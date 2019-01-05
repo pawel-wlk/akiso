@@ -27,38 +27,40 @@ main:
   mov dword [result],1
   movd xmm1, dword [result]
 
+  xorps xmm3, xmm3
+  xorps xmm4, xmm4
+  xorps xmm5, xmm5
+
   calculatingloop:
     cmp ecx, 1
     je printing
 
     movd xmm2,ecx
 
-    movdqu xmm3, xmm1
-    movdqu xmm4, xmm1
-    movdqu xmm5, xmm1
-
-    psrlq xmm3, 32
-    psrlq xmm4, 64
-    psrlq xmm5, 96
-
     pmuludq xmm1, xmm2
     pmuludq xmm3, xmm2
     pmuludq xmm4, xmm2
     pmuludq xmm5, xmm2
 
-    psllq xmm3, 32
-    psllq xmm4, 64
-    psllq xmm5, 96
+    movdqu xmm0, xmm1
+    psrlq xmm0, 32
+    paddq xmm3, xmm0
 
-    paddq xmm1, xmm3
-    paddq xmm1, xmm4
-    paddq xmm1, xmm5
+    movdqu xmm0, xmm3
+    psrlq xmm0, 32
+    paddq xmm4, xmm0
 
+    movdqu xmm0, xmm4
+    psrlq xmm0, 32
+    paddq xmm5, xmm0
 
     loop calculatingloop
 
   printing:
     movdqu oword[result], xmm1
+    movdqu oword[result+4], xmm3
+    movdqu oword[result+8], xmm4
+    movdqu oword[result+16], xmm5
     push dword [result],
     push dword [result+4],
     push dword [result+8],

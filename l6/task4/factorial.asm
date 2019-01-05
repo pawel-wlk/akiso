@@ -60,7 +60,7 @@ main:
     movdqu oword[result], xmm1
     movdqu oword[result+4], xmm3
     movdqu oword[result+8], xmm4
-    movdqu oword[result+16], xmm5
+    movdqu oword[result+12], xmm5
     push dword [result],
     push dword [result+4],
     push dword [result+8],

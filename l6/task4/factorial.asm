@@ -25,24 +25,27 @@ main:
 
   mov ecx, [num]
   mov dword [result],1
-  movd xmm1, dword [result]
+  movd xmm2, dword [result]
 
-  xorps xmm3, xmm3
+  xorps xmm3, xmm3 ; clear xmms
   xorps xmm4, xmm4
   xorps xmm5, xmm5
+  ; our number looks like that: xmm5 xmm4 xmm3 xmm2
+  ; xmm0 is shifting buffer
+  ; xmm1 is multiplier
 
   calculatingloop:
     cmp ecx, 1
     je printing
 
-    movd xmm2,ecx
+    movd xmm1,ecx
 
-    pmuludq xmm1, xmm2
-    pmuludq xmm3, xmm2
-    pmuludq xmm4, xmm2
-    pmuludq xmm5, xmm2
+    pmuludq xmm2, xmm1 ; multiply every part of number by xmm1
+    pmuludq xmm3, xmm1
+    pmuludq xmm4, xmm1
+    pmuludq xmm5, xmm1
 
-    movdqu xmm0, xmm1
+    movdqu xmm0, xmm2 ; use xmm0 as buffer to properly add carry and add to next segment of number
     psrlq xmm0, 32
     paddq xmm3, xmm0
 
@@ -57,14 +60,11 @@ main:
     loop calculatingloop
 
   printing:
-    movdqu oword[result], xmm1
-    movdqu oword[result+4], xmm3
-    movdqu oword[result+8], xmm4
-    movdqu oword[result+12], xmm5
-    push dword [result],
-    push dword [result+4],
-    push dword [result+8],
-    push dword [result+12],
+    sub esp, 16
+    movdqu oword [esp], xmm5
+    movdqu oword [esp+4], xmm4
+    movdqu oword [esp+8], xmm3
+    movdqu oword [esp+12], xmm2
     push dword [num]
     push resultformat
     call printf

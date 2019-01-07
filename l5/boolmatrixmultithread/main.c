@@ -4,6 +4,8 @@
 #include<time.h>
 #include<pthread.h>
 
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
 typedef struct {
   int matrixsize;
   bool** matrix1;
@@ -39,7 +41,11 @@ void* multiplymatrixrow(void* args) {
   printf("thread started\n");
   matrices_t* m = (matrices_t*) args;
   while(m->calculatedrows < m->matrixsize) {
+
+    pthread_mutex_lock(&mutex);
     int i = m->calculatedrows++;
+    pthread_mutex_unlock(&mutex);
+
     for (int j=0; j < m->matrixsize; j++) {
       int sum=0;
       for(int sumcounter=0; sumcounter < m->matrixsize; sumcounter++) {

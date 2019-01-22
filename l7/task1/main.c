@@ -4,11 +4,11 @@
 #include <stdbool.h>
 
 
-int count_shift(char* number) {
+int count_shift(char* number, unsigned int length) {
   int counter = 0;
   while (*number !=  '\0') {
     if (*number == '.')
-      return strlen(number) - counter;
+      return length - counter;
     counter++;
     number++;
   }
@@ -26,9 +26,9 @@ void parse_number_to_arrays(char* number, char* integer, char* fraction) {
       continue;
     }
     if (dot_passed) {
-      fraction[counter] = (*number >= '0' && *number <= '9') ? (*number) - '0' : 0;
+      fraction[counter] = (*number) - '0';
     } else {
-      integer[counter] = (*number >= '0' && *number <= '9') ? (*number) - '0' : 0;
+      integer[counter] =  (*number) - '0';
     }
 
     number++;
@@ -41,6 +41,7 @@ bool divide_by2(char* number, char* result, unsigned int length){
   bool remainder = 0;
 
   for (int i=0; i<length; i++) {
+    printf("%d ", number[i]);
     current_num = remainder*10 + number[i];
     result[i] = current_num / 2;
     remainder = current_num % 2;
@@ -70,10 +71,10 @@ int main(int argc, char** argv) {
 	}
 
   int precision = atoi(argv[2]);
-  int shift = count_shift(argv[1]);
+  int shift = count_shift(argv[1], strlen(argv[1]));
   int length = (shift == 0) ? strlen(argv[1]) : strlen(argv[1])-1;
-  char* integer = malloc(length * sizeof(char));
-  char* fraction = malloc(length * sizeof(char));
+  char* integer = malloc((length-shift+1) * sizeof(char));
+  char* fraction = malloc(shift * sizeof(char));
   char* tmp = malloc(length * sizeof(char));
 
   parse_number_to_arrays(argv[1], integer, fraction);
@@ -81,8 +82,8 @@ int main(int argc, char** argv) {
   bool* binary_int = malloc(precision*sizeof(bool));
 
   for (int i=precision-1; i>=0; i-=2) {
-    binary_int[i]   = divide_by2(integer, tmp, length-shift);
-    binary_int[i-1] = divide_by2(tmp, integer, length-shift);
+    binary_int[i]   = divide_by2(integer, tmp, length-shift+1);
+    binary_int[i-1] = divide_by2(tmp, integer, length-shift+1);
   }
 
   for (int i=0; i<precision; i++) {
